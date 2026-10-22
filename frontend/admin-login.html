@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+<head>
+  <title>Admin Login</title>
+  <style>
+    body { font-family: Arial; background: #f4f6f8; display: flex; align-items: center; justify-content: center; height: 100vh; }
+    .card {
+      background: #fff; padding: 25px; width: 340px;
+      border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    input { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; border-radius: 8px; }
+    button { width: 100%; padding: 12px; background: #1f6feb; color: white; border: none; border-radius: 8px; cursor: pointer; }
+    .error { color: red; text-align: center; display: none; }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h2 style="text-align:center">Admin Login</h2>
+
+    <input id="email" type="email" placeholder="Admin Email" required>
+    <input id="password" type="password" placeholder="Password" required>
+
+    <button id="loginBtn">Login</button>
+    <p id="errMsg" class="error"></p>
+  </div>
+
+  <script>
+    document.getElementById('loginBtn').addEventListener('click', async () => {
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value.trim();
+      const errMsg = document.getElementById('errMsg');
+
+      try {
+        const res = await fetch('http://localhost:3000/api/admin/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) throw new Error(data.message);
+
+        localStorage.setItem('admin_token', data.token);
+        window.location.href = 'admin-dashboard.html';
+      } catch (err) {
+        errMsg.innerText = err.message;
+        errMsg.style.display = 'block';
+      }
+    });
+  </script>
+
+</body>
+</html>

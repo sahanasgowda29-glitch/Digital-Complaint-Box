@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Register - Digital Complaint Box</title>
+
+  <style>
+    body {
+      font-family: Arial;
+      background: #f4f6f8;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .card {
+      background: #fff;
+      padding: 28px;
+      width: 360px;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    }
+    h1 {
+      text-align: center;
+      color: #1f6feb;
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 6px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 15px;
+      box-sizing: border-box;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #1f6feb;
+      color: white;
+      border: none;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 16px;
+    }
+    button:hover { background: #155cc4; }
+    .muted {
+      font-size: 14px;
+      text-align: center;
+      margin-top: 12px;
+    }
+    .error {
+      color: red;
+      font-size: 14px;
+      margin-top: 10px;
+      text-align: center;
+      display: none;
+    }
+    .success {
+      color: green;
+      font-size: 14px;
+      margin-top: 10px;
+      text-align: center;
+      display: none;
+    }
+    .admin-link {
+      font-size: 14px;
+      text-align: center;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>Create Account</h1>
+
+    <form id="registerForm">
+      <label>Name</label>
+      <input id="name" type="text" required />
+
+      <label>Email</label>
+      <input id="email" type="email" required />
+
+      <label>Password</label>
+      <input id="password" type="password" required />
+
+      <button type="submit">Register</button>
+    </form>
+
+    <div id="errorBox" class="error"></div>
+    <div id="successBox" class="success"></div>
+
+    <!-- Normal user login link -->
+    <p class="muted">
+      Already have an account? <a href="login.html">Sign In</a>
+    </p>
+
+    <!-- 🔐 Admin login link directly from register page -->
+    <p class="admin-link">
+      Are you an admin?
+      <a href="admin-login.html">Login as Admin</a>
+    </p>
+  </main>
+
+  <script>
+    const form = document.getElementById('registerForm');
+    const errorBox = document.getElementById('errorBox');
+    const successBox = document.getElementById('successBox');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errorBox.style.display = 'none';
+      successBox.style.display = 'none';
+
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value.trim();
+
+      if (!name || !email || !password) {
+        errorBox.innerText = 'All fields are required.';
+        errorBox.style.display = 'block';
+        return;
+      }
+
+      try {
+        const res = await fetch('http://localhost:3000/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, password }),
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.message || 'Registration failed');
+        }
+
+        successBox.innerText = 'Registration successful! Redirecting to login...';
+        successBox.style.display = 'block';
+
+        // After short delay go to login
+        setTimeout(() => { window.location.href = 'login.html'; }, 1500);
+      } catch (err) {
+        errorBox.innerText = err.message || 'Registration failed';
+        errorBox.style.display = 'block';
+      }
+    });
+  </script>
+
+</body>
+</html>

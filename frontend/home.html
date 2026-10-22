@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Home - Digital Complaint Box</title>
+
+  <link rel="icon" type="image/png" href="favicon.png">
+
+  <style>
+    body { font-family: Arial; margin: 0; background: #f4f6f8; }
+
+    .topbar {
+      background: #fff; padding: 14px; font-size: 20px;
+      font-weight: bold; color: #1f6feb; border-bottom: 1px solid #ddd;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+
+    .topbar span.username {
+      font-size: 14px;
+      color: #555;
+      font-weight: normal;
+    }
+
+    .container { padding: 20px; }
+
+    .card {
+      background: #fff; padding: 20px; border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+    }
+
+    .category-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .category-btn {
+      width: 100%;
+      padding: 14px;
+      background: #f8f9fc;
+      border: 1px solid #dce2ec;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .category-btn:hover {
+      background: #e9f1ff;
+      border-color: #1f6feb;
+    }
+
+    .logout-btn {
+      border: none;
+      background: transparent;
+      color: #d00;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .user-section {
+      margin-top: 24px;
+      padding-top: 16px;
+      border-top: 1px dashed #ddd;
+    }
+
+    .user-label {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="topbar">
+    <div>Digital Complaint Box</div>
+    <div>
+      <span class="username" id="usernameLabel"></span>
+      &nbsp;|&nbsp;
+      <button class="logout-btn" id="logoutBtn">Logout</button>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="card">
+      <h2>Choose a Complaint Category</h2>
+
+      <div class="category-list">
+        <button class="category-btn" onclick="openComplaint('Water problem')">
+          🚰 Water Problem
+        </button>
+
+        <button class="category-btn" onclick="openComplaint('Road problem')">
+          🛣️ Road Problem
+        </button>
+
+        <button class="category-btn" onclick="openComplaint('Street light problem')">
+          💡 Street Light Problem
+        </button>
+
+        <button class="category-btn" onclick="openComplaint('Others')">
+          📝 Other Issues
+        </button>
+      </div>
+
+      <!-- User area: view all complaints -->
+      <div class="user-section">
+        <div class="user-label">User tools:</div>
+        <button class="category-btn" onclick="openUserComplaints()">
+          📜 View All Complaints & Status
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // Redirect if not logged in
+    const token = localStorage.getItem('token');
+    if (!token) {
+      window.location.href = 'login.html';
+    }
+
+    // Display logged in username
+    const storedName = localStorage.getItem('dc_username');
+    document.getElementById('usernameLabel').textContent =
+      storedName ? 'Logged in as ' + storedName : '';
+
+    // Logout
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      localStorage.removeItem('token');
+      localStorage.removeItem('dc_username');
+      window.location.href = 'login.html';
+    });
+
+    function openComplaint(category) {
+      localStorage.setItem('selected_category', category);
+      window.location.href = 'complaint.html';
+    }
+
+    function openUserComplaints() {
+      window.location.href = 'user-complaints.html';
+    }
+  </script>
+
+</body>
+</html>
